@@ -656,7 +656,7 @@ public class DefaultCodegen {
         }
     }
 
-    private Response findMethodResponse(Map<String, Response> responses) {
+    protected Response findMethodResponse(Map<String, Response> responses) {
 
         String code = null;
         for (String responseCode : responses.keySet()) {
