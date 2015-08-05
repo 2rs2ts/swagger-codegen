@@ -1,0 +1,86 @@
+{
+    "kind":"discovery#restDescription",
+    "discoveryVersion":"v1",
+    "id":"{{!todo}}",
+    "name":"{{!todo}}",
+    "version": "{{apiVersion}}",
+    "title":"{{#info}}{{title}}{{/info}}",
+    "description":"{{#info}}{{description}}{{/info}}",
+    "documentationLink":"{{#externalDocs}}{{url}}{{/externalDocs}}",
+    "protocol":"rest",
+    "rootUrl":"{{!todo}}",
+    "servicePath":"{{basePath}}",
+    "serviceName": "{{#info}}{{title}}{{/info}}",
+    "schemas": {
+        {{#models}}{{#model}}
+        "{{name}}": {
+            "$ref":"{{filename}}"
+        }{{#hasMoreModels}},{{/hasMoreModels}}{{/model}}{{/models}}
+    },
+    "resources":{
+    {{#apiInfo}}{{#apis}}{{#operations}}
+        "{{classname}}":{
+            "methods":{
+                {{#operation}}
+                "{{nickname}}":{
+                    "id":"{{nickname}}",
+                    "path":"{{path}}",
+                    "httpMethod":"{{httpMethod}}",
+                    {{#hasParams}}
+                    "parameters":{
+                        {{#allParams}}{{^isBodyParam}}
+                        "{{paramName}}":{
+                            "type":"{{dataType}}",
+                            "description":"{{description}}",
+                        "location":"{{#isPathParam}}path{{/isPathParam}}{{#isQueryParam}}query{{/isQueryParam}}{{#isHeaderParam}}header{{/isHeaderParam}}{{#isFormParam}}formData{{/isFormParam}}"{{#allowableValues}},
+                            "enum":[
+                                {{{allowableValues}}}
+                            ]
+                            {{/allowableValues}}
+                        {{!a}}
+                        }{{#hasMore}},{{/hasMore}}
+                        {{/isBodyParam}}{{/allParams}}
+                    },
+                    "required": [
+                        {{#allParams}}{{^isBodyParam}}{{#required}}
+                        "{{paramName}}"{{#hasMore}},
+                        {{/hasMore}}
+                        {{/required}}{{/isBodyParam}}{{/allParams}}{{!a}}
+                    ],
+                    {{#bodyParams}}
+                    {{#isContainer}}
+                    "request":{
+                        "type":"array",
+                        "items": {
+                            "{{#isPrimitiveType}}type{{/isPrimitiveType}}{{^isPrimitiveType}}$ref{{/isPrimitiveType}}": "{{baseType}}"
+                        }
+                    },
+                    {{/isContainer}}
+                    {{^isContainer}}
+                    "request":{
+                        "$ref": "./{{dataType}}.json"
+                    },{{!spacing}}
+                    {{/isContainer}}
+                    {{/bodyParams}}
+                    {{#returnType}}
+                    "response":{
+                    {{/returnType}}
+                    {{#returnContainer}}
+                        "type":"array",
+                        "items":{
+                    {{/returnContainer}}
+                    {{!comment for spacing}}    {{#returnBaseType}}"$ref":"{{/returnBaseType}}{{returnBaseType}}{{#returnBaseType}}"{{/returnBaseType}}{{!spacing}}
+                    {{#returnContainer}}
+                        }
+                    {{/returnContainer}}
+                    {{#returnType}}
+                    },
+                    {{/returnType}}{{!spacing}}
+                    {{/hasParams}}
+                    "description": "{{summary}}"{{!spacing}}
+                }{{#hasMore}},{{/hasMore}}
+                {{/operation}}
+            }
+        }{{#hasMore}},{{/hasMore}}{{/operations}}{{/apis}}{{/apiInfo}}
+    }
+}

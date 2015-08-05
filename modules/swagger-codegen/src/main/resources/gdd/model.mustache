@@ -1,0 +1,61 @@
+{
+    "id":"{{name}}:v1",
+    "type":"object",
+    "$schema":"http://json-schema.org/draft-04/hyper-schema",
+    "name":"{{name}}",
+    {{#models}}
+    {{#model}}
+    "description":"{{description}}",
+    {{/model}}
+    {{/models}}
+    "schemas": {
+        {{#models}}
+        {{#model}}
+        "{{classVarName}}:v1":{
+            "$ref":"{{filename}}"
+        }{{#hasMoreModels}},{{/hasMoreModels}}
+        {{/model}}
+        {{/models}}
+    },
+    {{#models}}
+    {{#model}}
+    "properties": {
+        {{#vars}}
+        "{{name}}": {
+            {{#isContainer}}
+            "type":"array",
+            "items": {
+                {{#isPrimitiveType}}"type": "{{datatype}}"{{/isPrimitiveType}}{{^isPrimitiveType}}"$ref": "{{filename}}"{{/isPrimitiveType}}
+            },
+            {{/isContainer}}
+            {{#isNotContainer}}
+            {{#isPrimitiveType}}"type": "{{datatype}}"{{/isPrimitiveType}}{{^isPrimitiveType}}"$ref": "{{filename}}"{{/isPrimitiveType}},
+            {{/isNotContainer}}
+            {{#format}}
+                "format":"{{format}}",
+            {{/format}}
+            {{#isReadOnly}}
+              "readOnly": true,
+            {{/isReadOnly}}
+            {{#isEnum}}
+                "enum": [{{#_enum}}
+                    "{{value}}"{{#hasMore}},{{/hasMore}}{{/_enum}}
+                ],
+            {{/isEnum}}
+            "description":"{{#isReadOnly}}[READONLY] {{/isReadOnly}}{{description}}"
+        }{{#hasMore}},
+        {{/hasMore}}
+        {{^hasMore}}{{!a}}
+        {{/hasMore}}
+        {{/vars}}
+    }{{#hasRequired}},
+    "required":[
+        {{#requiredVars}}
+        "{{name}}"{{#hasMoreRequired}},
+        {{/hasMoreRequired}}
+        {{/requiredVars}}{{!a}}
+    ]{{/hasRequired}}{{^hasRequired}}
+    {{/hasRequired}}
+{{/model}}
+{{/models}}{{!a}}
+}
